@@ -17,7 +17,7 @@ export default function NavigationDrawer() {
         name="Home"
         component={HomeNavigation}
         options={{
-          tabBarLabel: "Crear Usuario",
+          tabBarLabel: "Usuarios",
           tabBarIcon: ({ color, size }) => (
             <Icon name="save" color={color} size={size} />
           ),

@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 export default function HomeNavigation() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} options={{title: "Actualizar usuarios", headerTitleAlign: "center"}} />
     </Stack.Navigator>
   );
 }

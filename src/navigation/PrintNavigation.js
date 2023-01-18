@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 export default function PrintNavigation() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Print" component={PrintScreen} />
+      <Stack.Screen name="Print" component={PrintScreen} options={{title: "Imprimir PDF", headerTitleAlign: "center"}} />
     </Stack.Navigator>
   );
 }

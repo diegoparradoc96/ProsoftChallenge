@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {
   Text,
+  View,
   TouchableOpacity,
+  Button,
   StyleSheet,
   TextInput,
   ToastAndroid,
 } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Modal from "react-native-modal";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -15,6 +18,13 @@ import * as Yup from "yup";
 
 export default function HomeScreen(props) {
   const { navigation } = props;
+
+  const [isModalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const [novedad, setNovedad] = useState("Nuevo");
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -28,55 +38,104 @@ export default function HomeScreen(props) {
 
   return (
     <KeyboardAwareScrollView>
-    <SafeAreaView>
-      <Text style={styles.title}>Formulario</Text>
+      <SafeAreaView>
+        <Text style={styles.title}>{novedad}</Text>
 
-      <Text style={styles.label}>Cedula</Text>
-      <TextInput
-        placeholder="1121935723"
-        style={styles.input}
-        autoCapitalize="none"
-        value={formik.values.cedula}
-        onChangeText={(text) => formik.setFieldValue("cedula", text)}
-      />
+        <Text style={styles.label}>Cedula</Text>
+        <TextInput
+          placeholder="1121935723"
+          style={styles.input}
+          autoCapitalize="none"
+          value={formik.values.cedula}
+          onChangeText={(text) => formik.setFieldValue("cedula", text)}
+        />
 
-      <Text style={styles.label}>Nombres</Text>
-      <TextInput
-        placeholder="Luis Enrique"
-        style={styles.input}
-        autoCapitalize="none"
-        value={formik.values.nombres}
-        onChangeText={(text) => formik.setFieldValue("nombres", text)}
-      />
+        <Text style={styles.label}>Nombres</Text>
+        <TextInput
+          placeholder="Luis Enrique"
+          style={styles.input}
+          autoCapitalize="none"
+          value={formik.values.nombres}
+          onChangeText={(text) => formik.setFieldValue("nombres", text)}
+        />
 
-      <Text style={styles.label}>Apellidos</Text>
-      <TextInput
-        placeholder="Petro Guarin"
-        style={styles.input}
-        autoCapitalize="none"
-        value={formik.values.apellidos}
-        onChangeText={(text) => formik.setFieldValue("apellidos", text)}
-      />
+        <Text style={styles.label}>Apellidos</Text>
+        <TextInput
+          placeholder="Petro Guarin"
+          style={styles.input}
+          autoCapitalize="none"
+          value={formik.values.apellidos}
+          onChangeText={(text) => formik.setFieldValue("apellidos", text)}
+        />
 
-      <Text style={styles.label}>Celular</Text>
-      <TextInput
-        placeholder="3208275850"
-        style={styles.input}
-        autoCapitalize="none"
-        value={formik.values.celular}
-        onChangeText={(text) => formik.setFieldValue("celular", text)}
-      />
+        <Text style={styles.label}>Celular</Text>
+        <TextInput
+          placeholder="3208275850"
+          style={styles.input}
+          autoCapitalize="none"
+          value={formik.values.celular}
+          onChangeText={(text) => formik.setFieldValue("celular", text)}
+        />
 
-      <TouchableOpacity
-        title="Guardar"
-        onPress={formik.handleSubmit}
-        style={styles.button}
-      >
-        <Text style={styles.textButton}>Guardar</Text>
-      </TouchableOpacity>
-      {/* <Text style={styles.error}>{formik.errors.codigo}</Text> */}
-      {/* <Text style={styles.error}>{formik.errors.nombre}</Text> */}
-    </SafeAreaView>
+        <TouchableOpacity
+          title="Guardar"
+          onPress={formik.handleSubmit}
+          style={styles.button}
+        >
+          <Text style={styles.textButton}>Guardar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          title="modal"
+          onPress={() => {
+            toggleModal();
+          }}
+          style={styles.button}
+        >
+          <Text style={styles.textButton}>Ver modal</Text>
+        </TouchableOpacity>
+
+        <Modal
+          isVisible={isModalVisible}
+          onBackdropPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modal}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>¿Que desea hacer?</Text>
+              <View
+                style={{ borderBottomColor: "grey", borderBottomWidth: 1 }}
+              />
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setNovedad("Nuevo");
+                  toggleModal();
+                }}
+              >
+                <Text style={styles.modalTextButton}>Nuevo</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setNovedad("Editar");
+                  toggleModal();
+                }}
+              >
+                <Text style={styles.modalTextButton}>Editar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  setNovedad("Eliminar");
+                  toggleModal();
+                }}
+              >
+                <Text style={styles.modalTextButton}>Eliminar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </SafeAreaView>
     </KeyboardAwareScrollView>
   );
 }
@@ -115,9 +174,9 @@ function validationSchema() {
 const styles = StyleSheet.create({
   title: {
     textAlign: "center",
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 5,
     marginBottom: 15,
   },
   label: {
@@ -150,5 +209,35 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#f00",
     marginTop: 20,
+  },
+  modal: {
+    flex: 1,
+    maxHeight: 310,
+    padding: 30,
+  },
+  modalTitle: {
+    textAlign: "center",
+    justifyContent: "center",
+    height: 40,
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  modalContainer: {
+    color: "white",
+    maxHeight: 250,
+    padding: 30,
+    backgroundColor: "white",
+    borderRadius: 10,
+  },
+  modalButton: {
+    justifyContent: "center",
+    backgroundColor: "white",
+    height: 50,
+  },
+  modalTextButton: {
+    color: "black",
+    textAlign: "center",
+    //fontWeight: "bold",
+    fontSize: 20,
   },
 });
