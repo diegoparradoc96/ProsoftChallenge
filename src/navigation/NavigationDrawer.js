@@ -19,7 +19,7 @@ export default function NavigationDrawer() {
         options={{
           tabBarLabel: "Usuarios",
           tabBarIcon: ({ color, size }) => (
-            <Icon name="save" color={color} size={size} />
+            <Icon name="user" color={color} size={size} />
           ),
         }}
       />

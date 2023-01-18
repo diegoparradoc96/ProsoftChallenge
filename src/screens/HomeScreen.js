@@ -3,7 +3,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Button,
   StyleSheet,
   TextInput,
   ToastAndroid,
