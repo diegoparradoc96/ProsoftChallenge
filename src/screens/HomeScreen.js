@@ -39,13 +39,13 @@ export default function HomeScreen(props) {
 
   return (
     <KeyboardAwareScrollView>
-      <SafeAreaView>
+      <SafeAreaView style={styles.formulario}>
         <TouchableOpacity
           title="modal"
           onPress={() => {
             toggleModal();
           }}
-          style={styles.button}
+          style={styles.buttonNovedad}
         >
           <Text style={styles[novedad]}>
             <Icon
@@ -105,7 +105,15 @@ export default function HomeScreen(props) {
           onPress={formik.handleSubmit}
           style={styles.button}
         >
-          <Text style={styles.textButton}>Guardar</Text>
+          <Text style={styles.textButton}>
+            {novedad == "Nuevo"
+              ? "Crear usuario"
+              : novedad == "Editar"
+              ? "Editar usuario"
+              : novedad == "Eliminar"
+              ? "Eliminar usuario"
+              : ""}
+          </Text>
         </TouchableOpacity>
 
         <Modal
@@ -185,6 +193,10 @@ function validationSchema() {
 }
 
 const styles = StyleSheet.create({
+  formulario: {
+    paddingTop: 0,
+    padding: 25,
+  },
   title: {
     textAlign: "center",
     fontSize: 24,
@@ -210,10 +222,18 @@ const styles = StyleSheet.create({
     margin: 12,
     height: 45,
     borderRadius: 7,
+    backgroundColor: "#ccc",
+  },
+  buttonNovedad: {
+    justifyContent: "center",
+    margin: 12,
+    height: 45,
+    borderRadius: 7,
     backgroundColor: "#f2f2f2",
   },
   textButton: {
-    color: "#1b6dff",
+    //color: "#1b6dff",
+    color: "#343434",
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 20,
