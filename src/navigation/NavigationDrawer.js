@@ -1,18 +1,38 @@
 import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Image } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 //import HomeScreen from "../screens/HomeScreen";
 //import PrintScreen from "../screens/PrintScreen";
 import HomeNavigation from "../navigation/HomeNavigation";
 import PrintNavigation from "../navigation/PrintNavigation";
 
-const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function NavigationDrawer() {
   return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="Home" component={HomeNavigation} />
-      <Drawer.Screen name="Print" component={PrintNavigation} />
-    </Drawer.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={HomeNavigation}
+        options={{
+          tabBarLabel: "Crear Usuario",
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="save" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Print"
+        component={PrintNavigation}
+        options={{
+          tabBarLabel: "Imprimir PDF",
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="file-pdf" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }

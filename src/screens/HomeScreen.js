@@ -86,6 +86,7 @@ function initialValues() {
     cedula: "",
     nombres: "",
     apellidos: "",
+    celular: "",
   };
 }
 
