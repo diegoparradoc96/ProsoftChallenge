@@ -11,6 +11,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Modal from "react-native-modal";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -39,7 +40,29 @@ export default function HomeScreen(props) {
   return (
     <KeyboardAwareScrollView>
       <SafeAreaView>
-        <Text style={styles.title}>{novedad}</Text>
+        <TouchableOpacity
+          title="modal"
+          onPress={() => {
+            toggleModal();
+          }}
+          style={styles.button}
+        >
+          <Text style={styles[novedad]}>
+            <Icon
+              name={
+                novedad == "Nuevo"
+                  ? "user-plus"
+                  : novedad == "Editar"
+                  ? "user-edit"
+                  : novedad == "Eliminar"
+                  ? "user-times"
+                  : ""
+              }
+              style={{ fontSize: 20 }}
+            ></Icon>
+            {` ${novedad}`}
+          </Text>
+        </TouchableOpacity>
 
         <Text style={styles.label}>Cedula</Text>
         <TextInput
@@ -83,16 +106,6 @@ export default function HomeScreen(props) {
           style={styles.button}
         >
           <Text style={styles.textButton}>Guardar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          title="modal"
-          onPress={() => {
-            toggleModal();
-          }}
-          style={styles.button}
-        >
-          <Text style={styles.textButton}>Ver modal</Text>
         </TouchableOpacity>
 
         <Modal
@@ -197,10 +210,10 @@ const styles = StyleSheet.create({
     margin: 12,
     height: 45,
     borderRadius: 7,
-    backgroundColor: "#1b6dff",
+    backgroundColor: "#f2f2f2",
   },
   textButton: {
-    color: "#fff",
+    color: "#1b6dff",
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 20,
@@ -238,6 +251,24 @@ const styles = StyleSheet.create({
     color: "black",
     textAlign: "center",
     //fontWeight: "bold",
+    fontSize: 20,
+  },
+  Nuevo: {
+    color: "green",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  Editar: {
+    color: "#1b6dff",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  Eliminar: {
+    color: "red",
+    textAlign: "center",
+    fontWeight: "bold",
     fontSize: 20,
   },
 });
