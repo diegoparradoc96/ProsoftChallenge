@@ -3,8 +3,6 @@ import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from "react-native-vector-icons/FontAwesome5";
 
-//import HomeScreen from "../screens/HomeScreen";
-//import PrintScreen from "../screens/PrintScreen";
 import HomeNavigation from "../navigation/HomeNavigation";
 import PrintNavigation from "../navigation/PrintNavigation";
 

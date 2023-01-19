@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+
+/* imports */
 import {
   Text,
   View,
@@ -15,6 +17,14 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import * as SQLite from "expo-sqlite";
 
+/* endPoints */
+import {
+  _getUsuario,
+  _postUsuario,
+  _putUsuario,
+  _deleteUsuario,
+} from "../postData";
+
 /* Components */
 import CON851 from "../components/CON851";
 
@@ -22,7 +32,6 @@ export default function HomeScreen(props) {
   /* Modal */
   const [isModalVisible, setModalVisible] = useState(false);
   const [novedad, setNovedad] = useState("Nuevo");
-
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
@@ -34,6 +43,11 @@ export default function HomeScreen(props) {
     setshowCON851(!showCON851);
     settextCON851(text);
   };
+
+  let modalCON851 = (event) => {
+    setshowCON851(!event);
+  };
+
   /* DB */
   const db = SQLite.openDatabase("usuar.db");
   const [usuarios, setUsuarios] = useState([]);
@@ -182,10 +196,6 @@ export default function HomeScreen(props) {
     },
   });
 
-  let modalCON851 = (event) => {
-    setshowCON851(!event);
-  };
-
   return (
     <KeyboardAwareScrollView>
       <SafeAreaView style={styles.formulario}>
@@ -259,11 +269,7 @@ export default function HomeScreen(props) {
           }}
         />
 
-        <TouchableOpacity
-          title="Guardar"
-          onPress={formik.handleSubmit}
-          style={styles.button}
-        >
+        <TouchableOpacity onPress={formik.handleSubmit} style={styles.button}>
           <Text style={styles.textButton}>
             {novedad == "Nuevo"
               ? "Crear usuario"
@@ -283,7 +289,11 @@ export default function HomeScreen(props) {
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitle}>¿Que desea hacer?</Text>
               <View
-                style={{ borderBottomColor: "grey", borderBottomWidth: 1, marginBottom: 5 }}
+                style={{
+                  borderBottomColor: "grey",
+                  borderBottomWidth: 1,
+                  marginBottom: 5,
+                }}
               />
               <TouchableOpacity
                 style={styles.modalButton}
