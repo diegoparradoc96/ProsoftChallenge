@@ -35,7 +35,7 @@ export default function HomeScreen(props) {
     settextCON851(text);
   };
   /* DB */
-  const db = SQLite.openDatabase("usu.db");
+  const db = SQLite.openDatabase("usuar.db");
   const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function HomeScreen(props) {
       tx.executeSql(
         "SELECT * FROM usuarios",
         null,
-        //(txObj, resultSet) => setUsuarios(resultSet.rows._array),
         (txObj, resultSet) => setUsuarios(resultSet.rows._array),
         (txObj, error) => console.error("joder", error)
       );
@@ -144,6 +143,7 @@ export default function HomeScreen(props) {
             if (!usuario) {
               addUsuario(data);
               toggleShowCON851("Usuario registrado exitosamente");
+              formik.resetForm();
             } else {
               toggleShowCON851(`La cedula ${cedula} ya existe`);
             }
@@ -157,6 +157,7 @@ export default function HomeScreen(props) {
               toggleShowCON851(`La cedula ${cedula} no existe`);
             } else {
               updateUsuario(data);
+              formik.resetForm();
               toggleShowCON851("Usuario actualizado exitosamente");
             }
             break;
@@ -169,6 +170,7 @@ export default function HomeScreen(props) {
               toggleShowCON851(`La cedula ${cedula} no existe`);
             } else {
               deleteUsuario(data);
+              formik.resetForm();
               toggleShowCON851("Usuario eliminado exitosamente");
             }
             break;
@@ -181,9 +183,7 @@ export default function HomeScreen(props) {
   });
 
   let modalCON851 = (event) => {
-    console.log("evento: ", event);
     setshowCON851(!event);
-    
   };
 
   return (
@@ -215,11 +215,16 @@ export default function HomeScreen(props) {
 
         <Text style={styles.label}>Cedula</Text>
         <TextInput
+          keyboardType="number-pad"
           placeholder="1121935723"
           style={styles.input}
           autoCapitalize="none"
           value={formik.values.cedula}
-          onChangeText={(text) => formik.setFieldValue("cedula", text)}
+          onChangeText={(text) => {
+            if (!isNaN(text)) {
+              formik.setFieldValue("cedula", text);
+            }
+          }}
         />
 
         <Text style={styles.label}>Nombres</Text>
@@ -243,10 +248,15 @@ export default function HomeScreen(props) {
         <Text style={styles.label}>Celular</Text>
         <TextInput
           placeholder="3208275850"
+          keyboardType="number-pad"
           style={styles.input}
           autoCapitalize="none"
           value={formik.values.celular}
-          onChangeText={(text) => formik.setFieldValue("celular", text)}
+          onChangeText={(text) => {
+            if (!isNaN(text)) {
+              formik.setFieldValue("celular", text);
+            }
+          }}
         />
 
         <TouchableOpacity
@@ -273,7 +283,7 @@ export default function HomeScreen(props) {
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitle}>¿Que desea hacer?</Text>
               <View
-                style={{ borderBottomColor: "grey", borderBottomWidth: 1 }}
+                style={{ borderBottomColor: "grey", borderBottomWidth: 1, marginBottom: 5 }}
               />
               <TouchableOpacity
                 style={styles.modalButton}
