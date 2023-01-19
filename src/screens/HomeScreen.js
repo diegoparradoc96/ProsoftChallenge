@@ -76,6 +76,46 @@ export default function HomeScreen(props) {
     });
   };
 
+  const deleteUsuario = (usuario) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "DELETE FROM usuarios WHERE cedula = ?",
+        [usuario.cedula],
+        (txObj, resultSet) => {
+          if (resultSet.rowsAffected > 0) {
+            let existingUsuarios = [...usuarios].filter(
+              (usuario) => usuario.cedula !== usuario.cedula
+            );
+            setUsuarios(existingUsuarios);
+          }
+        },
+        (txObj, error) => console.error(error)
+      );
+    });
+  };
+
+  const updateUsuario = (usuario) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "UPDATE usuarios SET nombres = ?, apellidos = ?, celular = ? WHERE cedula = ?",
+        [usuario.nombres, usuario.apellidos, usuario.celular, usuario.cedula],
+        (txObj, resultSet) => {
+          if (resultSet.rowsAffected > 0) {
+            let existingUsuarios = [...usuarios];
+            const indexToUpdate = existingUsuarios.findIndex(
+              (user) => user.cedula == usuario.cedula
+            );
+            existingUsuarios[indexToUpdate].nombres = usuario.nombres;
+            existingUsuarios[indexToUpdate].apellidos = usuario.apellidos;
+            existingUsuarios[indexToUpdate].celular = usuario.celular;
+            setUsuarios(existingUsuarios);
+          }
+        },
+        (txObj, error) => console.error(error)
+      );
+    });
+  };
+
   /* Formik */
   const formik = useFormik({
     initialValues: initialValues(),
@@ -105,8 +145,31 @@ export default function HomeScreen(props) {
               addUsuario(data);
               toggleShowCON851("Usuario registrado exitosamente");
             } else {
-              console.log("entrer", showCON851);
               toggleShowCON851(`La cedula ${cedula} ya existe`);
+            }
+            break;
+
+          case "Editar":
+            const findUser = usuarios.find(
+              (usuario) => usuario.cedula == cedula
+            );
+            if (!findUser) {
+              toggleShowCON851(`La cedula ${cedula} no existe`);
+            } else {
+              updateUsuario(data);
+              toggleShowCON851("Usuario actualizado exitosamente");
+            }
+            break;
+
+          case "Eliminar":
+            const findUsuario = usuarios.find(
+              (usuario) => usuario.cedula == cedula
+            );
+            if (!findUsuario) {
+              toggleShowCON851(`La cedula ${cedula} no existe`);
+            } else {
+              deleteUsuario(data);
+              toggleShowCON851("Usuario eliminado exitosamente");
             }
             break;
 
@@ -120,6 +183,7 @@ export default function HomeScreen(props) {
   let modalCON851 = (event) => {
     console.log("evento: ", event);
     setshowCON851(!event);
+    
   };
 
   return (
