@@ -15,7 +15,6 @@ const postData = ({
       data,
       responseType,
     };
-    console.log("my config: ", config);
     axios(config)
       .then((res) => {
         resolve(res.data);
@@ -40,12 +39,13 @@ const _getUsuario = async () => {
   }
 };
 
-const _postUsuario = async (body) => {
+const _postUsuario = async (data) => {
+  console.log("my body: ", data);
   try {
     const RES = await postData({
       url: `/usuario`,
       method: "POST",
-      body,
+      data,
     });
     return RES;
   } catch (error) {
@@ -53,12 +53,12 @@ const _postUsuario = async (body) => {
   }
 };
 
-const _putUsuario = async ({ cedula, body }) => {
+const _putUsuario = async ({ cedula, data }) => {
   try {
     const RES = await postData({
       url: `/usuario/${cedula}`,
       method: "PUT",
-      body,
+      data,
     });
     return RES;
   } catch (error) {
