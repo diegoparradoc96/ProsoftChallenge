@@ -13,28 +13,114 @@ import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import * as SQLite from "expo-sqlite";
 
 /* Components */
+import CON851 from "../components/CON851";
 
 export default function HomeScreen(props) {
-  const { navigation } = props;
-
+  /* Modal */
   const [isModalVisible, setModalVisible] = useState(false);
+  const [novedad, setNovedad] = useState("Nuevo");
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const [novedad, setNovedad] = useState("Nuevo");
+  /* CON851 */
+  const [showCON851, setshowCON851] = useState(false);
+  const [textCON851, settextCON851] = useState("");
+  const toggleShowCON851 = (text) => {
+    setshowCON851(!showCON851);
+    settextCON851(text);
+  };
+  /* DB */
+  const db = SQLite.openDatabase("usu.db");
+  const [usuarios, setUsuarios] = useState([]);
 
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS usuarios (cedula INTEGER PRIMARY KEY, nombres TEXT, apellidos TEXT, celular TEXT)"
+      );
+    });
+
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM usuarios",
+        null,
+        //(txObj, resultSet) => setUsuarios(resultSet.rows._array),
+        (txObj, resultSet) => setUsuarios(resultSet.rows._array),
+        (txObj, error) => console.error("joder", error)
+      );
+    });
+  }, []);
+
+  const addUsuario = (usuario) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "INSERT INTO usuarios (cedula, nombres, apellidos, celular) values (?, ? ,? ,?)",
+        [usuario.cedula, usuario.nombres, usuario.apellidos, usuario.celular],
+        (txObj, resultSet) => {
+          let existingUsuarios = [...usuarios];
+          existingUsuarios.push({
+            cedula: usuario.cedula,
+            nombres: usuario.nombres,
+            apellidos: usuario.apellidos,
+            celular: usuario.celular,
+          });
+          setUsuarios(existingUsuarios);
+        },
+        (txObj, error) => console.error("joder: ", error)
+      );
+    });
+  };
+
+  /* Formik */
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: Yup.object(validationSchema()),
     validateOnChange: false,
     onSubmit: (formValues) => {
       const { cedula, nombres, apellidos, celular } = formValues;
-      console.log("formValues: ", cedula, nombres, apellidos, celular);
+      let data = {
+        cedula,
+        nombres,
+        apellidos,
+        celular,
+      };
+
+      if (
+        !cedula == "" &&
+        !nombres == "" &&
+        !apellidos == "" &&
+        !celular == ""
+      ) {
+        switch (novedad) {
+          case "Nuevo":
+            const usuario = usuarios.find(
+              (usuario) => usuario.cedula == cedula
+            );
+            if (!usuario) {
+              addUsuario(data);
+              toggleShowCON851("Usuario registrado exitosamente");
+            } else {
+              console.log("entrer", showCON851);
+              toggleShowCON851(`La cedula ${cedula} ya existe`);
+            }
+            break;
+
+          default:
+            break;
+        }
+      }
     },
   });
+
+  let modalCON851 = (event) => {
+    console.log("evento: ", event);
+    setshowCON851(!event);
+  };
 
   return (
     <KeyboardAwareScrollView>
@@ -155,6 +241,12 @@ export default function HomeScreen(props) {
             </View>
           </View>
         </Modal>
+
+        <CON851
+          showCON851={showCON851}
+          modalCON851={modalCON851}
+          textCON851={textCON851}
+        ></CON851>
       </SafeAreaView>
     </KeyboardAwareScrollView>
   );
